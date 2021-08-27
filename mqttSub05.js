@@ -1,45 +1,43 @@
-'use strict';
-
 let mqtt = require('mqtt');
 
-let clientId = 'mqttSub04';
+let clientId = 'mqttSub05';
 
+// let host = 'mqtt://localhost:1883';
 let host = 'mqtt://localhost:1883';
 
 let options = {
-  keepalive: 60,
+  keepalive: 120,
   clientId: clientId,
   protocolId: 'MQTT',
   protocolVersion: 4,
   clean: false,
   retain: false,
-  reconnectPeriod: 1000 * 3,
+  reconnectPeriod: 1000 * 5,
   connectTimeout: 1000 * 60,
   will: {
     topic: 'WilllMsg',
-    payload: `${clientId} Connection Closed abnormally..!`,
+    payload: `Subscriber ${clientId} Connection Closed abnormally..!`,
     qos: 1,
     retain: false
   }
 };
 
-let client = mqtt.connect(host, options);
+let client = mqtt.connect(host);
 
 client.on('error', function (err) {
   console.log(err);
   client.end();
 });
 
-client.subscribe('clientTest', { qos: 1 });
-
 client.on('connect', function () {
-  console.log('client connected: ' + clientId);
+  console.log(`${clientId} connected`);
+  client.subscribe('clientTest', { qos: 1 });
 });
 
 client.on('message', function (topic, message, packet) {
-  console.log('Rec\'d msg: ' + message.toString() + ' Topic: ' + topic);
+  console.log(`Rec'd ${message.toString()} On Topic: ${topic}`);
 });
 
 client.on('close', function () {
-  console.log(clientId + ' disconnected');
+  console.log(`${clientId} disconnected`);
 });

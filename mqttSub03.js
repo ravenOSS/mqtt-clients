@@ -1,13 +1,13 @@
 'use strict';
 
-var mqtt = require('mqtt');
+let mqtt = require('mqtt');
 
-var clientId = 'mqttSub03';
+let clientId = 'mqttSub03';
 
-var host = 'mqtt://192.168.0.101:1883';
+let host = 'mqtt://localhost:1883';
 
-var options = {
-  keepalive: 60,
+let options = {
+  keepalive: 120,
   clientId: clientId,
   protocolId: 'MQTT',
   protocolVersion: 4,
@@ -23,7 +23,7 @@ var options = {
   }
 };
 
-var client = mqtt.connect(host, options);
+let client = mqtt.connect(host, options);
 
 client.on('connect', function () {
   console.log('client connected:' + clientId);

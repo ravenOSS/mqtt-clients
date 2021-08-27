@@ -1,10 +1,8 @@
-'use strict';
+const mqtt = require('mqtt');
 
-let mqtt = require('mqtt');
+const clientId = 'mqttPub03';
 
-let clientId = 'wssPub00';
-
-let host = 'ws://192.168.0.101:8880';
+const host = 'mqtt://localhost:1883';
 
 let options = {
   keepalive: 60,
@@ -12,14 +10,14 @@ let options = {
   protocolId: 'MQTT',
   protocolVersion: 4,
   clean: false,
+  retain: true,
   reconnectPeriod: 1000 * 5,
   connectTimeout: 1000 * 30,
-  // retain: true,
   will: {
     topic: 'WillMsg',
-    payload: 'Publisher connection Closed abnormally..!',
+    payload: `Publisher ${clientId} connection Closed abnormally..!`,
     qos: 1,
-    retain: true
+    retain: false
   }
 };
 
@@ -31,15 +29,18 @@ client.on('error', function (err) {
 });
 
 client.on('connect', function () {
-  console.log('client connected:' + clientId);
+  console.log(`${clientId} connected`);
 });
 
 setInterval(function () {
-  let d = new Date();
-  let msg = d.toString();
-  client.publish('clientTest', msg, { qos: 1, retain: false });
-  console.log(msg);
-}, 15000);
+  let date = new Date();
+  let presentTime = date.getSeconds();
+  // let msg = presentTime;
+  let msg = presentTime.toString();
+
+  client.publish('clientTest', msg, { qos: 1, retain: true });
+  console.log(clientId, msg);
+}, 1000 * 3);
 
 client.on('message', function (topic, message, packet) {
   console.log('Received Message:= ' + message.toString() + '\nOn topic:= ' + topic);

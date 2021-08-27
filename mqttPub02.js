@@ -1,12 +1,12 @@
-'use strict';
+'use strict'
 
-var mqtt = require('mqtt');
+let mqtt = require('mqtt')
 
-var clientId = 'mqttPub02';
+let clientId = 'mqttPub02'
 
-var host = 'mqtt://192.168.0.101:1883';
+var host = 'mqtt://192.168.0.112:1883'
 
-var options = {
+let options = {
   keepalive: 60,
   clientId: clientId,
   protocolId: 'MQTT',
@@ -21,30 +21,30 @@ var options = {
     qos: 1,
     retain: false
   }
-};
+}
 
-var client = mqtt.connect(host, options);
+let client = mqtt.connect(host, options)
 
 client.on('error', function (err) {
-  console.log(err);
-  client.end();
-});
+  console.log(err)
+  client.end()
+})
 
 client.on('connect', function () {
-  console.log('client connected:' + clientId);
-});
+  console.log('client connected:' + clientId)
+})
 
 setInterval(function () {
-  var d = new Date();
-  var msg = d.toString();
-  client.publish('clientTest', msg, { qos: 1, retain: false });
-  console.log(clientId, msg);
-}, 15000);
+  const d = new Date()
+  let msg = d.toString()
+  client.publish('clientTest', msg, { qos: 1, retain: false })
+  console.log(clientId, msg)
+}, 8000)
 
 client.on('message', function (topic, message, packet) {
-  console.log('Received Message:= ' + message.toString() + '\nOn topic:= ' + topic);
-});
+  console.log('Received Message:= ' + message.toString() + '\nOn topic:= ' + topic)
+})
 
 client.on('close', function () {
-  console.log(clientId + ' disconnected');
-});
+  console.log(clientId + ' disconnected')
+})

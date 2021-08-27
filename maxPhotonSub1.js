@@ -1,25 +1,25 @@
-'use strict';
-
 let mqtt = require('mqtt');
 
-let clientId = 'wssSubB01';
+let clientId = 'maxPhotonSub1';
 
-let host = 'ws://192.168.0.101:8880';
+let host = 'mqtt://192.168.0.103:1883';
+
+let subscription = 'distance';
 
 let options = {
-  keepalive: 60,
+  keepalive: 60, // seconds
   clientId: clientId,
   protocolId: 'MQTT',
   protocolVersion: 4,
   clean: false,
   retain: false,
-  reconnectPeriod: 1000 * 3,
-  connectTimeout: 1000 * 30,
+  reconnectPeriod: 1000 * 3, // interval between two reconnections
+  connectTimeout: 1000 * 60, // time to wait for a CONNACK
   will: {
     topic: 'WilllMsg',
-    payload: 'Subscriber Connection Closed abnormally..!',
-    qos: 0,
-    retain: true
+    payload: `${clientId} Connection Closed abnormally..!`,
+    qos: 1,
+    retain: false
   }
 };
 
@@ -27,7 +27,7 @@ let client = mqtt.connect(host, options);
 
 client.on('connect', function () {
   console.log('client connected :', clientId);
-  client.subscribe('clientTest', { qos: 1 });
+  client.subscribe(subscription, { qos: 1 });
 });
 
 client.on('error', function (err) {
@@ -36,18 +36,18 @@ client.on('error', function (err) {
 });
 
 client.on('message', function (topic, message, packet) {
-  console.log('%s Rec: %s Topic: %s', clientId, message.toString(), topic);
+  console.log(`Rec'd: ${message} on Topic: ${topic}`);
 });
 
 client.on('offline', function () {
   console.log('offline');
 });
 
+client.on('close', function () {
+  console.log(clientId + ' disconnected');
+});
+
 client.on('reconnect', function () {
   console.log('reconnected: ', clientId);
 //  client.subscribe('clientTest', { qos: 1 });
-});
-
-client.on('close', function () {
-  console.log(clientId + ' disconnected');
 });

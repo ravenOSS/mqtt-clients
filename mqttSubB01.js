@@ -1,14 +1,14 @@
 'use strict';
 
-var mqtt = require('mqtt');
+let mqtt = require('mqtt');
 
-var clientId = 'mqttSubB01';
+let mqttSubId = 'mqttSubB01';
 
-var host = 'mqtt://192.168.0.101:1883';
+let mqtturl = 'mqtt://localhost:2883';
 
-var options = {
+let mqttoptions = {
   keepalive: 60,
-  clientId: clientId,
+  clientId: mqttSubId,
   protocolId: 'MQTT',
   protocolVersion: 4,
   clean: false,
@@ -23,31 +23,33 @@ var options = {
   }
 };
 
-var client = mqtt.connect(host, options);
+let subscriptions = {'clientTest': 1};
 
-client.on('connect', function () {
-  console.log('client connected :', clientId);
-  client.subscribe('clientTest', { qos: 1 });
+  const mqttclient = mqtt.connect(mqtturl, mqttoptions);
+
+  mqttclient.on('error', function (err) {
+    console.log(err);
+    mqttclient.end();
+  });
+
+mqttclient.on('connect', function () {
+  console.log('%s mqtt client connected', mqttSubId);
 });
 
-client.on('error', function (err) {
-  console.log(err);
-  client.end();
+mqttclient.subscribe({subscriptions, mqttSubId});
+
+mqttclient.on('message', function (topic, message, packet) {
+  console.log('%s Rec: %s Topic: %s', mqttSubId, message.toString(), topic);
 });
 
-client.on('message', function (topic, message, packet) {
-  console.log('%s Rec: %s Topic: %s', clientId, message.toString(), topic);
-});
-
-client.on('offline', function () {
+mqttclient.on('offline', function () {
   console.log('offline');
 });
 
-client.on('reconnect', function () {
-  console.log('reconnected: ', clientId);
-//  client.subscribe('clientTest', { qos: 1 });
-});
+// mqttclient.on('reconnect', function () {
+//   console.log('reconnected: ', mqttSubId);
+// });
 
-client.on('close', function () {
-  console.log(clientId + ' disconnected');
+mqttclient.on('close', function () {
+  console.log(mqttSubId + ' disconnected');
 });
