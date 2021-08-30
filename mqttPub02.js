@@ -4,7 +4,7 @@ let mqtt = require('mqtt')
 
 let clientId = 'mqttPub02'
 
-var host = 'mqtt://192.168.0.112:1883'
+var host = 'mqtt://192.168.0.125:1883'
 
 let options = {
   keepalive: 60,
@@ -39,7 +39,7 @@ setInterval(function () {
   let msg = d.toString()
   client.publish('clientTest', msg, { qos: 1, retain: false })
   console.log(clientId, msg)
-}, 8000)
+}, 5000)
 
 client.on('message', function (topic, message, packet) {
   console.log('Received Message:= ' + message.toString() + '\nOn topic:= ' + topic)

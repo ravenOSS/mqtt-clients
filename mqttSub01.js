@@ -4,7 +4,7 @@ const mqtt = require('mqtt')
 
 const clientId = 'mqttSub01'
 
-const host = 'mqtt://192.168.0.112:1883'
+const host = 'mqtt://192.168.0.128:1883'
 
 const options = {
   keepalive: 60, // seconds
