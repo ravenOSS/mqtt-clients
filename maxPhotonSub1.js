@@ -30,13 +30,14 @@ client.on('connect', function () {
   client.subscribe(subscription, { qos: 1 });
 });
 
-client.on('error', function (err) {
-  console.log(err);
-  client.end();
-});
 
 client.on('message', function (topic, message, packet) {
   console.log(`Rec'd: ${message} on Topic: ${topic}`);
+});
+
+client.on('error', function (err) {
+  console.log(err);
+  client.end();
 });
 
 client.on('offline', function () {
